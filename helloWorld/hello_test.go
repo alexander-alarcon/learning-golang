@@ -1,14 +1,15 @@
 package main
 
 import (
+	"LearningGo/testhelpers"
 	"testing"
 )
 
 func TestGreet(t *testing.T) {
 	tests := []struct {
-		name     string
-		opts     GreetOptions
-		expected string
+		Name     string
+		Input    GreetOptions
+		Expected string
 	}{
 		{
 			"default_name_and_language",
@@ -42,18 +43,5 @@ func TestGreet(t *testing.T) {
 		},
 	}
 
-	for _, testCase := range tests {
-		t.Run(testCase.name, func(t *testing.T) {
-			result := Greet(testCase.opts)
-
-			assertCorrectMessage(t, result, testCase.expected, testCase.name)
-		})
-	}
-}
-
-func assertCorrectMessage(t testing.TB, got, want string, testName string) {
-	t.Helper()
-	if got != want {
-		t.Errorf("For test case %q: got %q, want %q", testName, got, want)
-	}
+	testhelpers.RunTableTest(t, tests, Greet)
 }
