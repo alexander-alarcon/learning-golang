@@ -6,42 +6,38 @@ import (
 )
 
 func TestRepeat(t *testing.T) {
-	tests := []struct {
-		Name     string
-		Input    RepeatOptions
-		Expected string
-	}{
+	tests := []testhelpers.TestCase[RepeatOptions, string]{
 		{
-			"repeat_a_character_3_times",
-			RepeatOptions{Character: "a", Times: 3},
-			"aaa",
+			Name:     "repeat_a_character_3_times",
+			Input:    RepeatOptions{Character: "a", Times: 3},
+			Expected: "aaa",
 		},
 		{
-			"repeat_character_0_times",
-			RepeatOptions{Character: "a", Times: 0},
-			"",
+			Name:     "repeat_character_0_times",
+			Input:    RepeatOptions{Character: "a", Times: 0},
+			Expected: "",
 		},
 		{
-			"repeat_empty_string_multiple_times",
-			RepeatOptions{Character: "", Times: 100000000},
-			"",
+			Name:     "repeat_empty_string_multiple_times",
+			Input:    RepeatOptions{Character: "", Times: 100000000},
+			Expected: "",
 		},
 		{
-			"repeat_unicode_character",
-			RepeatOptions{Character: "🙂", Times: 2},
-			"🙂🙂",
+			Name:     "repeat_unicode_character",
+			Input:    RepeatOptions{Character: "🙂", Times: 2},
+			Expected: "🙂🙂",
 		},
 		{
-			"repeat_character_1_time",
-			RepeatOptions{Character: "z", Times: 1},
-			"z",
+			Name:     "repeat_character_1_time",
+			Input:    RepeatOptions{Character: "z", Times: 1},
+			Expected: "z",
 		},
 		{
-			"repeat_negative_times",
-			RepeatOptions{Character: "a", Times: -100},
-			"",
+			Name:     "repeat_negative_times",
+			Input:    RepeatOptions{Character: "a", Times: -100},
+			Expected: "",
 		},
 	}
 
-	testhelpers.RunTableTest(t, tests, Repeat)
+	testhelpers.RunTableTest(t, tests, Repeat, testhelpers.AssertEqual[string])
 }

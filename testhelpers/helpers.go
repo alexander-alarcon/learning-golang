@@ -1,7 +1,18 @@
 // Package testhelpers provides generic testing helpers for table-driven tests.
 package testhelpers
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
+
+type AssertionFunc[Expected any] func(t *testing.T, got, want Expected, testName string)
+
+type TestCase[Input any, Expected any] struct {
+	Name     string
+	Input    Input
+	Expected Expected
+}
 
 func AssertEqual[T comparable](t *testing.T, got, want T, testName string) {
 	t.Helper()
@@ -10,17 +21,30 @@ func AssertEqual[T comparable](t *testing.T, got, want T, testName string) {
 	}
 }
 
-func RunTableTest[Input any, Expected comparable](t *testing.T, tests []struct {
-	Name     string
-	Input    Input
-	Expected Expected
-}, f func(Input) Expected,
+func AssertSlicesEqual[T any](t *testing.T, got, want []T, testName string) {
+	t.Helper()
+
+	if len(got) != len(want) {
+		t.Errorf("For test case %q: length mismatch - got length %d, want length %d", testName, len(got), len(want))
+		return
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("For test case %q: got %v, want %v", testName, got, want)
+	}
+}
+
+func RunTableTest[Input any, Expected any](
+	t *testing.T,
+	tests []TestCase[Input, Expected],
+	function func(Input) Expected,
+	assert AssertionFunc[Expected],
 ) {
 	for _, test := range tests {
 		t.Run(test.Name, func(t *testing.T) {
-			got := f(test.Input)
+			got := function(test.Input)
 
-			AssertEqual(t, got, test.Expected, test.Name)
+			assert(t, got, test.Expected, test.Name)
 		})
 	}
 }

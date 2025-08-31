@@ -6,42 +6,38 @@ import (
 )
 
 func TestGreet(t *testing.T) {
-	tests := []struct {
-		Name     string
-		Input    GreetOptions
-		Expected string
-	}{
+	tests := []testhelpers.TestCase[GreetOptions, string]{
 		{
-			"default_name_and_language",
-			GreetOptions{},
-			"Hello, World",
+			Name:     "default_name_and_language",
+			Input:    GreetOptions{},
+			Expected: "Hello, World",
 		},
 		{
-			"greet_world_in_spanish",
-			GreetOptions{language: Spanish},
-			"Hola, Mundo",
+			Name:     "greet_world_in_spanish",
+			Input:    GreetOptions{language: Spanish},
+			Expected: "Hola, Mundo",
 		},
 		{
-			"greet_world_in_french",
-			GreetOptions{language: French},
-			"Bonjour, Monde",
+			Name:     "greet_world_in_french",
+			Input:    GreetOptions{language: French},
+			Expected: "Bonjour, Monde",
 		},
 		{
-			"greet_with_name_in_english",
-			GreetOptions{name: "Gopher"},
-			"Hello, Gopher",
+			Name:     "greet_with_name_in_english",
+			Input:    GreetOptions{name: "Gopher"},
+			Expected: "Hello, Gopher",
 		},
 		{
-			"greet_with_name_in_spanish",
-			GreetOptions{name: "Gopher", language: Spanish},
-			"Hola, Gopher",
+			Name:     "greet_with_name_in_spanish",
+			Input:    GreetOptions{name: "Gopher", language: Spanish},
+			Expected: "Hola, Gopher",
 		},
 		{
-			"greet_with_name_in_french",
-			GreetOptions{name: "Gopher", language: French},
-			"Bonjour, Gopher",
+			Name:     "greet_with_name_in_french",
+			Input:    GreetOptions{name: "Gopher", language: French},
+			Expected: "Bonjour, Gopher",
 		},
 	}
 
-	testhelpers.RunTableTest(t, tests, Greet)
+	testhelpers.RunTableTest(t, tests, Greet, testhelpers.AssertEqual[string])
 }

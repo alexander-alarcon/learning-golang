@@ -6,42 +6,38 @@ import (
 )
 
 func TestAdder(t *testing.T) {
-	tests := []struct {
-		Name     string
-		Input    AdderOptions
-		Expected int
-	}{
+	tests := []testhelpers.TestCase[AdderOptions, int]{
 		{
-			"empty_list_returns_zero",
-			AdderOptions{Numbers: []int{}},
-			0,
+			Name:     "empty_list_returns_zero",
+			Input:    AdderOptions{Numbers: []int{}},
+			Expected: 0,
 		},
 		{
-			"sum_of_two_numbers",
-			AdderOptions{Numbers: []int{1, 2}},
-			3,
+			Name:     "sum_of_two_numbers",
+			Input:    AdderOptions{Numbers: []int{1, 2}},
+			Expected: 3,
 		},
 		{
-			"sum_of_several_numbers",
-			AdderOptions{Numbers: []int{1, 2, 3, 4, 5}},
-			15,
+			Name:     "sum_of_several_numbers",
+			Input:    AdderOptions{Numbers: []int{1, 2, 3, 4, 5}},
+			Expected: 15,
 		},
 		{
-			"sum_with_negative_numbers",
-			AdderOptions{Numbers: []int{-1, -2, 3}},
-			0,
+			Name:     "sum_with_negative_numbers",
+			Input:    AdderOptions{Numbers: []int{-1, -2, 3}},
+			Expected: 0,
 		},
 		{
-			"single_element",
-			AdderOptions{Numbers: []int{42}},
-			42,
+			Name:     "single_element",
+			Input:    AdderOptions{Numbers: []int{42}},
+			Expected: 42,
 		},
 		{
-			"sum_with_zeros",
-			AdderOptions{Numbers: []int{0, 0, 5}},
-			5,
+			Name:     "sum_with_zeros",
+			Input:    AdderOptions{Numbers: []int{0, 0, 5}},
+			Expected: 5,
 		},
 	}
 
-	testhelpers.RunTableTest(t, tests, Adder)
+	testhelpers.RunTableTest(t, tests, Adder, testhelpers.AssertEqual[int])
 }
