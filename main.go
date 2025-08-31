@@ -33,32 +33,37 @@ const (
 	frenchGreeting  = "Bonjour, "
 )
 
-func Greet(options GreetOptions) string {
-	var greeting string
-
-	switch options.language {
+func getGreeting(language Language) string {
+	switch language {
 	case Spanish:
-		greeting = spanishGreeting
-	case English:
-		greeting = englishGreeting
+		return spanishGreeting
 	case French:
-		greeting = frenchGreeting
+		return frenchGreeting
+	case English:
+		fallthrough
 	default:
-		greeting = englishGreeting
+		return englishGreeting
+	}
+}
+
+func getName(language Language, name string) string {
+	if name != "" {
+		return name
 	}
 
-	name := options.name
-	if name == "" {
-		switch options.language {
-		case Spanish:
-			name = "Mundo"
-		case French:
-			name = "Monde"
-		default:
-			name = "World"
-		}
+	switch language {
+	case Spanish:
+		return "Mundo"
+	case French:
+		return "Monde"
+	default:
+		return "World"
 	}
+}
 
+func Greet(options GreetOptions) string {
+	greeting := getGreeting(options.language)
+	name := getName(options.language, options.name)
 	return greeting + name
 }
 
