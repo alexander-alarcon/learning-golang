@@ -2,19 +2,24 @@ package main
 
 import "testing"
 
-func TestGreetDefaultValue(t *testing.T) {
-	got := Greet(GreetOptions{})
-	want := "Hello, World"
+func TestGreet(t *testing.T) {
+	t.Run("saying hello to people", func(t *testing.T) {
+		got := Greet(GreetOptions{name: "Gopher"})
+		want := "Hello, Gopher"
 
-	if got != want {
-		t.Errorf("got %q want %q", got, want)
-	}
+		assertCorrectMessage(t, got, want)
+	})
+
+	t.Run("saying hello world when an empty string is supplied", func(t *testing.T) {
+		got := Greet(GreetOptions{name: ""})
+		want := "Hello, World"
+
+		assertCorrectMessage(t, got, want)
+	})
 }
 
-func TestGreetWithName(t *testing.T) {
-	got := Greet(GreetOptions{name: "Gopher"})
-	want := "Hello, Gopher"
-
+func assertCorrectMessage(t testing.TB, got, want string) {
+	t.Helper()
 	if got != want {
 		t.Errorf("got %q want %q", got, want)
 	}

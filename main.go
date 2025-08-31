@@ -6,11 +6,13 @@ type GreetOptions struct {
 	name string
 }
 
+const englishGreeting = "Hello, "
+
 func Greet(options GreetOptions) string {
 	if options.name == "" {
-		return "Hello, World"
+		return englishGreeting + "World"
 	}
-	return fmt.Sprintf("Hello, %s", options.name)
+	return fmt.Sprintf("%s%s", englishGreeting, options.name)
 }
 
 func main() {
