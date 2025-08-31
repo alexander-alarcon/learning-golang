@@ -1,20 +1,57 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-type GreetOptions struct {
-	name string
+type Language int
+
+const (
+	English Language = iota
+	Spanish
+)
+
+func (lang Language) String() string {
+	names := [...]string{"English", "Spanish"}
+
+	if int(lang) < 0 || int(lang) >= len(names) {
+		return fmt.Sprintf("Unknown Language %d", lang)
+	}
+
+	return names[lang]
 }
 
-const englishGreeting = "Hello, "
+type GreetOptions struct {
+	language Language
+	name     string
+}
+
+const (
+	englishGreeting = "Hello, "
+	spanishGreeting = "Hola, "
+)
 
 func Greet(options GreetOptions) string {
-	if options.name == "" {
-		return englishGreeting + "World"
+	var greeting string
+
+	switch options.language {
+	case Spanish:
+		greeting = spanishGreeting
+	case English:
+		greeting = englishGreeting
+	default:
+		greeting = englishGreeting
 	}
-	return fmt.Sprintf("%s%s", englishGreeting, options.name)
+
+	name := options.name
+	if name == "" {
+		name = "World"
+	}
+
+	return greeting + name
 }
 
 func main() {
 	fmt.Println(Greet(GreetOptions{name: "Gopher"}))
+	fmt.Println(Greet(GreetOptions{name: "Gopher", language: Spanish}))
 }
