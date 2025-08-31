@@ -1,33 +1,59 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestGreet(t *testing.T) {
-	t.Run("saying hello to people", func(t *testing.T) {
-		got := Greet(GreetOptions{name: "Gopher"})
-		want := "Hello, Gopher"
+	tests := []struct {
+		name     string
+		opts     GreetOptions
+		expected string
+	}{
+		{
+			"default_name_and_language",
+			GreetOptions{},
+			"Hello, World",
+		},
+		{
+			"greet_world_in_spanish",
+			GreetOptions{language: Spanish},
+			"Hola, Mundo",
+		},
+		{
+			"greet_world_in_french",
+			GreetOptions{language: French},
+			"Bonjour, Monde",
+		},
+		{
+			"greet_with_name_in_english",
+			GreetOptions{name: "Gopher"},
+			"Hello, Gopher",
+		},
+		{
+			"greet_with_name_in_spanish",
+			GreetOptions{name: "Gopher", language: Spanish},
+			"Hola, Gopher",
+		},
+		{
+			"greet_with_name_in_french",
+			GreetOptions{name: "Gopher", language: French},
+			"Bonjour, Gopher",
+		},
+	}
 
-		assertCorrectMessage(t, got, want)
-	})
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			result := Greet(testCase.opts)
 
-	t.Run("saying hello world when an empty string is supplied", func(t *testing.T) {
-		got := Greet(GreetOptions{name: ""})
-		want := "Hello, World"
-
-		assertCorrectMessage(t, got, want)
-	})
-
-	t.Run("in Spanish", func(t *testing.T) {
-		got := Greet(GreetOptions{name: "Gopher", language: Spanish})
-		want := "Hola, Gopher"
-
-		assertCorrectMessage(t, got, want)
-	})
+			assertCorrectMessage(t, result, testCase.expected, testCase.name)
+		})
+	}
 }
 
-func assertCorrectMessage(t testing.TB, got, want string) {
+func assertCorrectMessage(t testing.TB, got, want string, testName string) {
 	t.Helper()
 	if got != want {
-		t.Errorf("got %q want %q", got, want)
+		t.Errorf("For test case %q: got %q, want %q", testName, got, want)
 	}
 }
