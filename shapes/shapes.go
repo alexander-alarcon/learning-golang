@@ -3,7 +3,7 @@ package shapes
 
 import "math"
 
-type PerimeterOptions struct {
+type Rectangle struct {
 	Width  float64
 	Height float64
 }
@@ -12,13 +12,13 @@ type PerimeterOptions struct {
 // rules:
 // - if any dimension is equal to 0, return -1
 // - if any dimension is negative, convert it to positive
-func Perimeter(options PerimeterOptions) float64 {
-	if options.Width == 0 || options.Height == 0 {
+func Perimeter(rectangle Rectangle) float64 {
+	if rectangle.Width == 0 || rectangle.Height == 0 {
 		return -1.0
 	}
 
-	width := math.Abs(options.Width)
-	height := math.Abs(options.Height)
+	width := math.Abs(rectangle.Width)
+	height := math.Abs(rectangle.Height)
 
 	return 2 * (width + height)
 }
@@ -27,13 +27,13 @@ func Perimeter(options PerimeterOptions) float64 {
 // rules:
 // - if any dimension is equal to 0, return -1
 // - if any dimension is negative, convert it to positive
-func Area(options PerimeterOptions) float64 {
-	if options.Width == 0 || options.Height == 0 {
+func Area(rectangle Rectangle) float64 {
+	if rectangle.Width == 0 || rectangle.Height == 0 {
 		return -1.0
 	}
 
-	width := math.Abs(options.Width)
-	height := math.Abs(options.Height)
+	width := math.Abs(rectangle.Width)
+	height := math.Abs(rectangle.Height)
 
 	return width * height
 }
