@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-func TestRectanglePerimeter(t *testing.T) {
-	tests := []testhelpers.TestCase[Rectangle, float64]{
+func TestShapePerimeter(t *testing.T) {
+	tests := []testhelpers.TestCase[Shape, float64]{
 		{
 			Name:     "rectangle_perimeter",
 			Input:    Rectangle{Width: 3.0, Height: 4.0},
@@ -70,13 +70,48 @@ func TestRectanglePerimeter(t *testing.T) {
 			Input:    Rectangle{Width: 0.0, Height: 0.0},
 			Expected: -1.0, // No es un rectángulo válido, devuelve -1.0
 		},
+		{
+			Name:     "circle_perimeter",
+			Input:    Circle{Radius: 3.0},
+			Expected: 18.84955592153876,
+		},
+		{
+			Name:     "zero_radius",
+			Input:    Circle{Radius: 0.0},
+			Expected: -1.0, // No es una circunferencia valida, devuelve -1.0
+		},
+		{
+			Name:     "negative_radius",
+			Input:    Circle{Radius: -3.0},
+			Expected: -1.0, // El radio negativo no es válido, devuelve -1.0
+		},
+		{
+			Name:     "large_radius",
+			Input:    Circle{Radius: 1e6},
+			Expected: 2 * math.Pi * 1e6, // 2π * 1e6
+		},
+		{
+			Name:     "huge_radius",
+			Input:    Circle{Radius: 1e9},
+			Expected: 2 * math.Pi * 1e9, // 2π * 1e9
+		},
+		{
+			Name:     "tiny_radius",
+			Input:    Circle{Radius: 1e-9},
+			Expected: 2 * math.Pi * 1e-9, // 2π * 1e-9
+		},
+		{
+			Name:     "small_radius",
+			Input:    Circle{Radius: 1e-6},
+			Expected: 2 * math.Pi * 1e-6, // 2π * 1e-6
+		},
 	}
 
-	testhelpers.RunTableTest(t, tests, Rectangle.Perimeter, testhelpers.AssertEqual[float64])
+	testhelpers.RunTableTest(t, tests, Shape.Perimeter, testhelpers.AssertFloatEqual)
 }
 
-func TestRectangleArea(t *testing.T) {
-	tests := []testhelpers.TestCase[Rectangle, float64]{
+func TestShapeArea(t *testing.T) {
+	tests := []testhelpers.TestCase[Shape, float64]{
 		{
 			Name:     "rectangle_area",
 			Input:    Rectangle{Width: 3.0, Height: 4.0},
@@ -139,55 +174,6 @@ func TestRectangleArea(t *testing.T) {
 			Input:    Rectangle{Width: 0.0, Height: 0.0},
 			Expected: -1.0, // No es un rectángulo válido, devuelve -1.0
 		},
-	}
-
-	testhelpers.RunTableTest(t, tests, Rectangle.Area, testhelpers.AssertEqual[float64])
-}
-
-func TestCirclePerimeter(t *testing.T) {
-	tests := []testhelpers.TestCase[Circle, float64]{
-		{
-			Name:     "circle_perimeter",
-			Input:    Circle{Radius: 3.0},
-			Expected: 18.84955592153876,
-		},
-		{
-			Name:     "zero_radius",
-			Input:    Circle{Radius: 0.0},
-			Expected: -1.0, // No es una circunferencia valida, devuelve -1.0
-		},
-		{
-			Name:     "negative_radius",
-			Input:    Circle{Radius: -3.0},
-			Expected: -1.0, // El radio negativo no es válido, devuelve -1.0
-		},
-		{
-			Name:     "large_radius",
-			Input:    Circle{Radius: 1e6},
-			Expected: 2 * math.Pi * 1e6, // 2π * 1e6
-		},
-		{
-			Name:     "huge_radius",
-			Input:    Circle{Radius: 1e9},
-			Expected: 2 * math.Pi * 1e9, // 2π * 1e9
-		},
-		{
-			Name:     "tiny_radius",
-			Input:    Circle{Radius: 1e-9},
-			Expected: 2 * math.Pi * 1e-9, // 2π * 1e-9
-		},
-		{
-			Name:     "small_radius",
-			Input:    Circle{Radius: 1e-6},
-			Expected: 2 * math.Pi * 1e-6, // 2π * 1e-6
-		},
-	}
-
-	testhelpers.RunTableTest(t, tests, Circle.Perimeter, testhelpers.AssertFloatEqual)
-}
-
-func TestCircleArea(t *testing.T) {
-	tests := []testhelpers.TestCase[Circle, float64]{
 		{
 			Name:     "circle_area",
 			Input:    Circle{Radius: 3.0},
@@ -225,5 +211,5 @@ func TestCircleArea(t *testing.T) {
 		},
 	}
 
-	testhelpers.RunTableTest(t, tests, Circle.Area, testhelpers.AssertFloatEqual)
+	testhelpers.RunTableTest(t, tests, Shape.Area, testhelpers.AssertFloatEqual)
 }
