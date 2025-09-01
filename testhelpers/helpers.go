@@ -2,6 +2,7 @@
 package testhelpers
 
 import (
+	"math"
 	"reflect"
 	"testing"
 )
@@ -18,6 +19,28 @@ func AssertEqual[T comparable](t *testing.T, got, want T, testName string) {
 	t.Helper()
 	if got != want {
 		t.Errorf("For test case %q: got %v, want %v", testName, got, want)
+	}
+}
+
+func AssertFloatEqual(t *testing.T, got, want float64, testName string) {
+	t.Helper()
+
+	// Usamos una tolerancia relativa que se adapta al tamaño de los valores
+	relativeTolerance := 1e-9 // Tolerancia relativa estándar
+
+	// Si el valor esperado es muy pequeño, usamos una tolerancia absoluta para evitar errores
+	// de punto flotante en números muy pequeños
+	if math.Abs(want) < 1e-9 {
+		// Si el valor esperado es muy pequeño, aplicamos una tolerancia absoluta
+		absoluteTolerance := 1e-9
+		if math.Abs(got-want) > absoluteTolerance {
+			t.Errorf("For test case %q: got %.9f, want %.9f (tolerance: %.9f)", testName, got, want, absoluteTolerance)
+		}
+	} else {
+		// Si el valor esperado no es pequeño, usamos la tolerancia relativa
+		if math.Abs(got-want)/math.Abs(want) > relativeTolerance {
+			t.Errorf("For test case %q: got %.9f, want %.9f (tolerance: %.9f)", testName, got, want, relativeTolerance)
+		}
 	}
 }
 

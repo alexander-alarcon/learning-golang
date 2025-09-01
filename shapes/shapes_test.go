@@ -2,6 +2,7 @@ package shapes
 
 import (
 	testhelpers "LearningGo/testhelpers"
+	"math"
 	"testing"
 )
 
@@ -71,7 +72,7 @@ func TestRectanglePerimeter(t *testing.T) {
 		},
 	}
 
-	testhelpers.RunTableTest(t, tests, Perimeter, testhelpers.AssertEqual[float64])
+	testhelpers.RunTableTest(t, tests, Rectangle.Perimeter, testhelpers.AssertEqual[float64])
 }
 
 func TestRectangleArea(t *testing.T) {
@@ -140,5 +141,89 @@ func TestRectangleArea(t *testing.T) {
 		},
 	}
 
-	testhelpers.RunTableTest(t, tests, Area, testhelpers.AssertEqual[float64])
+	testhelpers.RunTableTest(t, tests, Rectangle.Area, testhelpers.AssertEqual[float64])
+}
+
+func TestCirclePerimeter(t *testing.T) {
+	tests := []testhelpers.TestCase[Circle, float64]{
+		{
+			Name:     "circle_perimeter",
+			Input:    Circle{Radius: 3.0},
+			Expected: 18.84955592153876,
+		},
+		{
+			Name:     "zero_radius",
+			Input:    Circle{Radius: 0.0},
+			Expected: -1.0, // No es una circunferencia valida, devuelve -1.0
+		},
+		{
+			Name:     "negative_radius",
+			Input:    Circle{Radius: -3.0},
+			Expected: -1.0, // El radio negativo no es válido, devuelve -1.0
+		},
+		{
+			Name:     "large_radius",
+			Input:    Circle{Radius: 1e6},
+			Expected: 2 * math.Pi * 1e6, // 2π * 1e6
+		},
+		{
+			Name:     "huge_radius",
+			Input:    Circle{Radius: 1e9},
+			Expected: 2 * math.Pi * 1e9, // 2π * 1e9
+		},
+		{
+			Name:     "tiny_radius",
+			Input:    Circle{Radius: 1e-9},
+			Expected: 2 * math.Pi * 1e-9, // 2π * 1e-9
+		},
+		{
+			Name:     "small_radius",
+			Input:    Circle{Radius: 1e-6},
+			Expected: 2 * math.Pi * 1e-6, // 2π * 1e-6
+		},
+	}
+
+	testhelpers.RunTableTest(t, tests, Circle.Perimeter, testhelpers.AssertFloatEqual)
+}
+
+func TestCircleArea(t *testing.T) {
+	tests := []testhelpers.TestCase[Circle, float64]{
+		{
+			Name:     "circle_area",
+			Input:    Circle{Radius: 3.0},
+			Expected: 28.274333882308138,
+		},
+		{
+			Name:     "zero_radius",
+			Input:    Circle{Radius: 0.0},
+			Expected: -1.0, // No es una circunferencia valida, devuelve -1.0
+		},
+		{
+			Name:     "negative_radius",
+			Input:    Circle{Radius: -3.0},
+			Expected: -1.0, // El radio negativo no es válido, devuelve -1.0
+		},
+		{
+			Name:     "large_radius",
+			Input:    Circle{Radius: 1e6},
+			Expected: math.Pi * 1e6 * 1e6, // π * (1e6)^2
+		},
+		{
+			Name:     "huge_radius",
+			Input:    Circle{Radius: 1e9},
+			Expected: math.Pi * 1e9 * 1e9, // π * (1e9)^2
+		},
+		{
+			Name:     "tiny_radius",
+			Input:    Circle{Radius: 1e-9},
+			Expected: math.Pi * 1e-9 * 1e-9, // π * (1e-9)^2
+		},
+		{
+			Name:     "small_radius",
+			Input:    Circle{Radius: 1e-6},
+			Expected: math.Pi * 1e-6 * 1e-6, // π * (1e-6)^2
+		},
+	}
+
+	testhelpers.RunTableTest(t, tests, Circle.Area, testhelpers.AssertFloatEqual)
 }
