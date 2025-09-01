@@ -17,6 +17,11 @@ type Circle struct {
 	Radius float64
 }
 
+type Triangle struct {
+	Base   float64
+	Height float64
+}
+
 // Perimeter returns the perimeter of a rectangle
 // rules:
 // - if any dimension is equal to 0, return -1
@@ -61,4 +66,25 @@ func (circle Circle) Area() float64 {
 	}
 
 	return math.Pi * circle.Radius * circle.Radius
+}
+
+func (triangle Triangle) Perimeter() float64 {
+	if triangle.Base <= 0 || triangle.Height <= 0 {
+		return -1.0
+	}
+
+	if triangle.Base == triangle.Height {
+		return 3 * triangle.Base
+	}
+
+	hypothenuse := math.Hypot(triangle.Base, triangle.Height)
+	return hypothenuse + triangle.Base + triangle.Height
+}
+
+func (triangle Triangle) Area() float64 {
+	if triangle.Base <= 0 || triangle.Height <= 0 {
+		return -1.0
+	}
+
+	return 0.5 * triangle.Base * triangle.Height
 }
