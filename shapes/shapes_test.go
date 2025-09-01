@@ -105,6 +105,46 @@ func TestShapePerimeter(t *testing.T) {
 			Input:    Circle{Radius: 1e-6},
 			Expected: 2 * math.Pi * 1e-6, // 2π * 1e-6
 		},
+		{
+			Name:     "right_triangle_perimeter",
+			Input:    Triangle{Base: 3.0, Height: 4.0},
+			Expected: 12.0, // 3 + 4 + 5 (hipotenusa calculada con math.Hypot)
+		},
+		{
+			Name:     "equilateral_triangle_perimeter",
+			Input:    Triangle{Base: 5.0, Height: 5.0},
+			Expected: 15.0, // 5 + 5 + 5
+		},
+		{
+			Name:     "isosceles_triangle_perimeter",
+			Input:    Triangle{Base: 4.0, Height: 3.0},
+			Expected: 12.0, // 4 + 2*sqrt(4^2 + 3^2) (base + dos lados iguales)
+		},
+		{
+			Name:     "negative_base_perimeter",
+			Input:    Triangle{Base: -3.0, Height: 4.0},
+			Expected: -1.0, // Triángulo inválido con base negativa
+		},
+		{
+			Name:     "negative_height_perimeter",
+			Input:    Triangle{Base: 3.0, Height: -4.0},
+			Expected: -1.0, // Triángulo inválido con altura negativa
+		},
+		{
+			Name:     "zero_base_perimeter",
+			Input:    Triangle{Base: 0.0, Height: 4.0},
+			Expected: -1.0, // Triángulo inválido con base cero
+		},
+		{
+			Name:     "zero_height_perimeter",
+			Input:    Triangle{Base: 3.0, Height: 0.0},
+			Expected: -1.0, // Triángulo inválido con altura cero
+		},
+		{
+			Name:     "zero_both_dimensions_perimeter",
+			Input:    Triangle{Base: 0.0, Height: 0.0},
+			Expected: -1.0, // Triángulo inválido con base y altura cero
+		},
 	}
 
 	testhelpers.RunTableTest(t, tests, Shape.Perimeter, testhelpers.AssertFloatEqual)
@@ -208,6 +248,61 @@ func TestShapeArea(t *testing.T) {
 			Name:     "small_radius",
 			Input:    Circle{Radius: 1e-6},
 			Expected: math.Pi * 1e-6 * 1e-6, // π * (1e-6)^2
+		},
+		{
+			Name:     "right_triangle_area",
+			Input:    Triangle{Base: 3.0, Height: 4.0},
+			Expected: 6.0, // 1/2 * 3 * 4 = 6
+		},
+		{
+			Name:     "isosceles_triangle_area",
+			Input:    Triangle{Base: 4.0, Height: 3.0},
+			Expected: 6.0, // 1/2 * 4 * 3 = 6
+		},
+		{
+			Name:     "equilateral_triangle_area",
+			Input:    Triangle{Base: 5.0, Height: 5.0},
+			Expected: 12.5, // 1/2 * 5 * 5 = 12.5
+		},
+		{
+			Name:     "small_triangle_area",
+			Input:    Triangle{Base: 1e-6, Height: 1e-6},
+			Expected: 5e-13, // Área con dimensiones pequeñas
+		},
+		{
+			Name:     "large_triangle_area",
+			Input:    Triangle{Base: 1e6, Height: 1e6},
+			Expected: 5e11, // Área con dimensiones grandes
+		},
+		{
+			Name:     "zero_base_area",
+			Input:    Triangle{Base: 0.0, Height: 5.0},
+			Expected: -1.0, // Triángulo inválido con base cero
+		},
+		{
+			Name:     "zero_height_area",
+			Input:    Triangle{Base: 5.0, Height: 0.0},
+			Expected: -1.0, // Triángulo inválido con altura cero
+		},
+		{
+			Name:     "zero_both_dimensions_area",
+			Input:    Triangle{Base: 0.0, Height: 0.0},
+			Expected: -1.0, // Triángulo inválido con base y altura cero
+		},
+		{
+			Name:     "negative_base_area",
+			Input:    Triangle{Base: -5.0, Height: 4.0},
+			Expected: -1.0, // Triángulo inválido con base negativa
+		},
+		{
+			Name:     "negative_height_area",
+			Input:    Triangle{Base: 5.0, Height: -4.0},
+			Expected: -1.0, // Triángulo inválido con altura negativa
+		},
+		{
+			Name:     "tiny_base_area",
+			Input:    Triangle{Base: 1e-9, Height: 1e-9},
+			Expected: 5e-19, // Área con base y altura pequeñas
 		},
 	}
 
