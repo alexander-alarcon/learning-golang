@@ -73,3 +73,72 @@ func TestPerimeter(t *testing.T) {
 
 	testhelpers.RunTableTest(t, tests, Perimeter, testhelpers.AssertEqual[float64])
 }
+
+func TestArea(t *testing.T) {
+	tests := []testhelpers.TestCase[PerimeterOptions, float64]{
+		{
+			Name:     "rectangle_area",
+			Input:    PerimeterOptions{Width: 3.0, Height: 4.0},
+			Expected: 12.0,
+		},
+		{
+			Name:     "square_area",
+			Input:    PerimeterOptions{Width: 5.0, Height: 5.0},
+			Expected: 25.0, // 5 * 5 = 25
+		},
+		{
+			Name:     "negative_width",
+			Input:    PerimeterOptions{Width: -3.0, Height: 4.0},
+			Expected: 12.0, // El valor negativo del ancho se convierte en positivo, 3 * 4 = 12
+		},
+		{
+			Name:     "negative_height",
+			Input:    PerimeterOptions{Width: 3.0, Height: -4.0},
+			Expected: 12.0, // El valor negativo de la altura se convierte en positivo, 3 * 4 = 12
+		},
+		{
+			Name:     "negative_both_dimensions",
+			Input:    PerimeterOptions{Width: -3.0, Height: -4.0},
+			Expected: 12.0, // Ambos valores negativos se convierten en positivos, 3 * 4 = 12
+		},
+		{
+			Name:     "large_dimensions",
+			Input:    PerimeterOptions{Width: 1e6, Height: 1e6},
+			Expected: 1e12, // 1e6 * 1e6 = 1e12
+		},
+		{
+			Name:     "huge_dimensions",
+			Input:    PerimeterOptions{Width: 1e9, Height: 1e9},
+			Expected: 1e18, // 1e9 * 1e9 = 1e18
+		},
+		// Edge cases para valores pequeños
+		{
+			Name:     "small_dimensions",
+			Input:    PerimeterOptions{Width: 1e-6, Height: 1e-6},
+			Expected: 1e-12, // 1e-6 * 1e-6 = 1e-12
+		},
+		{
+			Name:     "tiny_dimensions",
+			Input:    PerimeterOptions{Width: 1e-9, Height: 1e-9},
+			Expected: 1e-18, // 1e-9 * 1e-9 = 1e-18
+		},
+		// Casos con cero (deberían devolver -1.0)
+		{
+			Name:     "zero_width",
+			Input:    PerimeterOptions{Width: 0.0, Height: 5.0},
+			Expected: -1.0, // No es un rectángulo válido, devuelve -1.0
+		},
+		{
+			Name:     "zero_height",
+			Input:    PerimeterOptions{Width: 5.0, Height: 0.0},
+			Expected: -1.0, // No es un rectángulo válido, devuelve -1.0
+		},
+		{
+			Name:     "zero_both_dimensions",
+			Input:    PerimeterOptions{Width: 0.0, Height: 0.0},
+			Expected: -1.0, // No es un rectángulo válido, devuelve -1.0
+		},
+	}
+
+	testhelpers.RunTableTest(t, tests, Area, testhelpers.AssertEqual[float64])
+}
