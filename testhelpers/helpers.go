@@ -15,6 +15,21 @@ type TestCase[Input any, Expected any] struct {
 	Expected Expected
 }
 
+type StateTestCase[Subject any, Result any] struct {
+	Name     string
+	Setup    func() Subject        // Initializes the test subject
+	Test     func(Subject) Result  // Runs the test logic and returns a result
+	Expected Result                // Expected result
+	Assert   AssertionFunc[Result] // Assertion function to compare results
+}
+
+type StateTestCaseNoExpected[Subject any] struct {
+	Name   string
+	Setup  func() Subject                  // Initializes the test subject
+	Test   func(Subject)                   // Runs the test logic
+	Assert func(t *testing.T, name string) // Performs the assertion manually
+}
+
 func AssertEqual[T comparable](t *testing.T, got, want T, testName string) {
 	t.Helper()
 	if got != want {
@@ -68,6 +83,32 @@ func RunTableTest[Input any, Expected any](
 			got := function(test.Input)
 
 			assert(t, got, test.Expected, test.Name)
+		})
+	}
+}
+
+func RunStateTests[Subject any, Result any](
+	t *testing.T,
+	tests []StateTestCase[Subject, Result],
+) {
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			subject := test.Setup()
+			result := test.Test(subject)
+			test.Assert(t, result, test.Expected, test.Name)
+		})
+	}
+}
+
+func RunStateTestsNoExpected[Subject any](
+	t *testing.T,
+	tests []StateTestCaseNoExpected[Subject],
+) {
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			subject := test.Setup()
+			test.Test(subject)
+			test.Assert(t, test.Name)
 		})
 	}
 }
