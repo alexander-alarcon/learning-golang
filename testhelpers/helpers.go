@@ -32,7 +32,7 @@ type StateTestCase[Subject any, Result any] struct {
 type StateTestCaseNoExpected[Subject any] struct {
 	Name   string                                           // Name of the test case
 	Setup  func() Subject                                   // Initializes the subject
-	Test   func(Subject)                                    // Performs the test logic
+	Test   func(t *testing.T, subject Subject, name string) // Performs the test logic
 	Assert func(t *testing.T, subject Subject, name string) // Custom assertion logic (manual)
 }
 
@@ -77,6 +77,26 @@ func AssertSlicesEqual[T any](t *testing.T, got, want []T, testName string) {
 	}
 }
 
+func AssertError(t testing.TB, got error, want string, testName string) {
+	t.Helper()
+
+	if got == nil {
+		t.Fatalf("For test case %q: expected error %q but got none", testName, want)
+	}
+
+	if got.Error() != want {
+		t.Errorf("For test case %q: got error %q, want %q", testName, got.Error(), want)
+	}
+}
+
+func AssertNoError(t testing.TB, got error, testName string) {
+	t.Helper()
+
+	if got != nil {
+		t.Errorf("For test case %q: didn't expect an error but got one: %v", testName, got)
+	}
+}
+
 // RunTableTest executes a list of TestCase for pure functions with deterministic output.
 func RunTableTest[Input any, Expected any](
 	t *testing.T,
@@ -115,7 +135,7 @@ func RunStateTestsNoExpected[Subject any](
 	for _, test := range tests {
 		t.Run(test.Name, func(t *testing.T) {
 			subject := test.Setup()
-			test.Test(subject)
+			test.Test(t, subject, test.Name)
 			test.Assert(t, subject, test.Name)
 		})
 	}
