@@ -5,52 +5,53 @@ import (
 	"testing"
 )
 
-func AssertBitcoinEqual(t *testing.T, got, want Bitcoin, testName string) {
+func AssertWalletBalance(t *testing.T, wallet *Wallet, want Bitcoin, testName string) {
 	t.Helper()
+
+	got := wallet.Balance()
 	if got != want {
 		t.Errorf("For test case %q: got %v, want %v", testName, got, want)
 	}
 }
 
 func TestWallet(t *testing.T) {
-	tests := []testhelpers.StateTestCase[*Wallet, Bitcoin]{
+	tests := []testhelpers.StateTestCaseNoExpected[*Wallet]{
 		{
 			Name: "initial_state_zero_balance",
 			Setup: func() *Wallet {
 				return &Wallet{}
 			},
-			Test: func(wallet *Wallet) Bitcoin {
-				return wallet.Balance()
+			Test: func(wallet *Wallet) {},
+			Assert: func(t *testing.T, wallet *Wallet, testName string) {
+				AssertWalletBalance(t, wallet, 0.0, testName)
 			},
-			Expected: 0.0,
-			Assert:   AssertBitcoinEqual,
 		},
 		{
 			Name: "deposit_once",
 			Setup: func() *Wallet {
 				return &Wallet{}
 			},
-			Test: func(wallet *Wallet) Bitcoin {
+			Test: func(wallet *Wallet) {
 				wallet.Deposit(0.5)
-				return wallet.Balance()
 			},
-			Expected: 0.5,
-			Assert:   AssertBitcoinEqual,
+			Assert: func(t *testing.T, wallet *Wallet, name string) {
+				AssertWalletBalance(t, wallet, 0.5, name)
+			},
 		},
 		{
 			Name: "deposit_accumulated",
 			Setup: func() *Wallet {
 				return &Wallet{}
 			},
-			Test: func(wallet *Wallet) Bitcoin {
+			Test: func(wallet *Wallet) {
 				wallet.Deposit(0.3)
 				wallet.Deposit(0.7)
-				return wallet.Balance()
 			},
-			Expected: 1.0,
-			Assert:   AssertBitcoinEqual,
+			Assert: func(t *testing.T, wallet *Wallet, name string) {
+				AssertWalletBalance(t, wallet, 1.0, name)
+			},
 		},
 	}
 
-	testhelpers.RunStateTests(t, tests)
+	testhelpers.RunStateTestsNoExpected(t, tests)
 }

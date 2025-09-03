@@ -30,10 +30,10 @@ type StateTestCase[Subject any, Result any] struct {
 // StateTestCaseNoExpected is for state-based tests that don't return a value,
 // and instead perform internal assertions.
 type StateTestCaseNoExpected[Subject any] struct {
-	Name   string                          // Name of the test case
-	Setup  func() Subject                  // Initializes the subject
-	Test   func(Subject)                   // Performs the test logic
-	Assert func(t *testing.T, name string) // Custom assertion logic (manual)
+	Name   string                                           // Name of the test case
+	Setup  func() Subject                                   // Initializes the subject
+	Test   func(Subject)                                    // Performs the test logic
+	Assert func(t *testing.T, subject Subject, name string) // Custom assertion logic (manual)
 }
 
 // AssertEqual compares two values using == and fails the test if they differ.
@@ -116,7 +116,7 @@ func RunStateTestsNoExpected[Subject any](
 		t.Run(test.Name, func(t *testing.T) {
 			subject := test.Setup()
 			test.Test(subject)
-			test.Assert(t, test.Name)
+			test.Assert(t, subject, test.Name)
 		})
 	}
 }
