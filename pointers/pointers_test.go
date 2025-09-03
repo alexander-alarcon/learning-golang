@@ -32,7 +32,8 @@ func TestWallet(t *testing.T) {
 				return &Wallet{}
 			},
 			Test: func(t *testing.T, wallet *Wallet, name string) {
-				wallet.Deposit(0.5)
+				err := wallet.Deposit(0.5)
+				testhelpers.AssertNoError(t, err, name)
 			},
 			Assert: func(t *testing.T, wallet *Wallet, name string) {
 				AssertWalletBalance(t, wallet, 0.5, name)
@@ -44,11 +45,27 @@ func TestWallet(t *testing.T) {
 				return &Wallet{}
 			},
 			Test: func(t *testing.T, wallet *Wallet, name string) {
-				wallet.Deposit(0.3)
-				wallet.Deposit(0.7)
+				err := wallet.Deposit(0.5)
+				testhelpers.AssertNoError(t, err, name)
+
+				err = wallet.Deposit(0.5)
+				testhelpers.AssertNoError(t, err, name)
 			},
 			Assert: func(t *testing.T, wallet *Wallet, name string) {
 				AssertWalletBalance(t, wallet, 1.0, name)
+			},
+		},
+		{
+			Name: "deposit_negative_amount",
+			Setup: func() *Wallet {
+				return &Wallet{}
+			},
+			Test: func(t *testing.T, wallet *Wallet, name string) {
+				err := wallet.Deposit(-1.0)
+				testhelpers.AssertError(t, err, "deposit amount must be greater than zero", name)
+			},
+			Assert: func(t *testing.T, wallet *Wallet, name string) {
+				AssertWalletBalance(t, wallet, 0.0, name)
 			},
 		},
 		{
