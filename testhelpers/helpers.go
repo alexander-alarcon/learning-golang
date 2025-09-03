@@ -11,11 +11,14 @@ import (
 // AssertionFunc is a generic function type used to compare expected and actual results in tests.
 type AssertionFunc[Expected any] func(t *testing.T, got, want Expected, testName string)
 
+type AssertionFuncWithError func(t *testing.T, gotErr, wantErr error, testName string)
+
 // TestCase represents a standard table-driven test case for pure functions.
 type TestCase[Input any, Expected any] struct {
-	Name     string   // Name of the test case
-	Input    Input    // Input to the function under test
-	Expected Expected // Expected result
+	Name          string   // Name of the test case
+	Input         Input    // Input to the function under test
+	Expected      Expected // Expected result
+	ExpectedError error    // Expected error (if any)
 }
 
 // StateTestCase is used for tests that involve setting up mutable state.
@@ -121,6 +124,26 @@ func RunTableTest[Input any, Expected any](
 		t.Run(test.Name, func(t *testing.T) {
 			got := function(test.Input)
 			assert(t, got, test.Expected, test.Name)
+		})
+	}
+}
+
+func RunTableTestWithError[Input any, Expected any](
+	t *testing.T,
+	tests []TestCase[Input, Expected],
+	function func(Input) (Expected, error),
+	assert AssertionFunc[Expected],
+	assertErr AssertionFuncWithError,
+) {
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			got, gotErr := function(test.Input)
+
+			assertErr(t, gotErr, test.ExpectedError, test.Name)
+
+			if gotErr == nil {
+				assert(t, got, test.Expected, test.Name)
+			}
 		})
 	}
 }
