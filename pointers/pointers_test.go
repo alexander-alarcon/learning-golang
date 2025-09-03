@@ -62,7 +62,7 @@ func TestWallet(t *testing.T) {
 			},
 			Test: func(t *testing.T, wallet *Wallet, name string) {
 				err := wallet.Deposit(-1.0)
-				testhelpers.AssertError(t, err, "deposit amount must be greater than zero", name)
+				testhelpers.AssertErrorIs(t, err, ErrInvalidDeposit, name)
 			},
 			Assert: func(t *testing.T, wallet *Wallet, name string) {
 				AssertWalletBalance(t, wallet, 0.0, name)
@@ -101,7 +101,7 @@ func TestWallet(t *testing.T) {
 			},
 			Test: func(t *testing.T, wallet *Wallet, name string) {
 				err := wallet.Withdraw(1.5)
-				testhelpers.AssertError(t, err, "cannot withdraw, insufficient funds", name)
+				testhelpers.AssertErrorIs(t, err, ErrInsufficientFunds, name)
 			},
 			Assert: func(t *testing.T, wallet *Wallet, name string) {
 				AssertWalletBalance(t, wallet, 1.0, name)

@@ -2,6 +2,7 @@
 package testhelpers
 
 import (
+	"errors"
 	"math"
 	"reflect"
 	"testing"
@@ -94,6 +95,18 @@ func AssertNoError(t testing.TB, got error, testName string) {
 
 	if got != nil {
 		t.Errorf("For test case %q: didn't expect an error but got one: %v", testName, got)
+	}
+}
+
+func AssertErrorIs(t testing.TB, got error, want error, testName string) {
+	t.Helper()
+
+	if got == nil {
+		t.Fatalf("For test case %q: expected error %v but got none", testName, want)
+	}
+
+	if !errors.Is(got, want) {
+		t.Errorf("For test case %q: got error %v, want error %v", testName, got, want)
 	}
 }
 
